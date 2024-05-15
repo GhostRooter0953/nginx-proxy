@@ -1,0 +1,34 @@
+server  {
+    listen 80;
+    listen [::]:80;
+
+    server_name {{ item.item }}.{{ domain }};
+
+    access_log /var/log/nginx/{{ item.item }}-access.log geo;
+    error_log /var/log/nginx/{{ item.item }}-error.log warn;
+{% if not item.stat.exists %}
+    root /var/www/html/;
+    index index.nginx-debian.html;
+{% endif %}
+    {% if item.stat.exists %}location / {
+        proxy_pass http://{{ item.item }};
+        include proxy_params;
+    }
+}
+server  {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+
+    server_name {{ item.item }}.{{ domain }};
+
+    access_log /var/log/nginx/{{ item.item }}-access.log geo;
+    error_log /var/log/nginx/{{ item.item }}-error.log warn;
+
+    ssl_certificate /etc/letsencrypt/live/{{ item.item }}.{{ domain }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ item.item }}.{{ domain }}/privkey.pem;
+
+    location / {
+        proxy_pass https://{{ item.item }};
+        include proxy_params;
+    }{% endif %}
+}
