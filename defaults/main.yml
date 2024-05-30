@@ -1,3 +1,4 @@
+template_path: 'templates/proxy.j2'
 sub_domains:
   - bobr
   - riba

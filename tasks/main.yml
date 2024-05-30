@@ -20,7 +20,7 @@
 
 - name: Copy nginx vhosts
   template:
-    src: "templates/proxy.j2"
+    src: "{{ template_path }}"
     dest: "/etc/nginx/sites-available/{{ item.item }}"
   loop: "{{ ssl.results }}"
   when: not item.stat.exists
@@ -59,7 +59,7 @@
 
 - name: Copy nginx vhosts
   template:
-    src: "templates/proxy.j2"
+    src: "{{ template_path }}"
     dest: "/etc/nginx/sites-available/{{ item.item }}"
   loop: "{{ ssl.results }}"
   notify: nginx reload
