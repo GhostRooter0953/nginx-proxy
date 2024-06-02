@@ -33,7 +33,7 @@
   loop: "{{ ssl.results }}"
   when: not item.stat.exists
 
-- name: nginx reload
+- name: Nginx reload
   systemd:
     name: nginx
     state: reloaded
@@ -42,7 +42,7 @@
 
 - name: Create SSL certificate if it's not exist
   shell:
-    cmd: certbot certonly --webroot -w /var/www/html/ --email ghostrooter2@mail.ru --agree-tos --non-interactive -d {{ item.item }}.{{ domain }}
+    cmd: certbot certonly --webroot -w /var/www/html/ --email onion-look@onion.io --agree-tos --non-interactive -d {{ item.item }}.{{ domain }}
   loop: "{{ ssl.results }}"
   when: not item.stat.exists
 
@@ -62,7 +62,6 @@
     src: "{{ template_path }}"
     dest: "/etc/nginx/sites-available/{{ item.item }}"
   loop: "{{ ssl.results }}"
-  notify: nginx reload
 
 - name: Create symlinks nginx sites vhost
   file:
@@ -70,4 +69,8 @@
     dest: '/etc/nginx/sites-enabled/{{ item.item }}'
     state: link
   loop: "{{ ssl.results }}"
-  notify: nginx reload
+
+- name: Nginx finally reload
+  systemd:
+    name: nginx
+    state: reloaded
