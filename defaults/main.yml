@@ -3,3 +3,7 @@ sub_domains:
   - bobr
   - riba
 domain: example.com
+password: 'user:password_hash'
+whitelist:
+  - allow 127.0.0.1;
+  - allow ::1;

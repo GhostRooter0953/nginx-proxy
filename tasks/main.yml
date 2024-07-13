@@ -7,6 +7,16 @@
     update_cache: yes
   become: yes
 
+- name: Copy htpasswd
+  template:
+    src: templates/htpasswd.j2
+    dest: /etc/nginx/custom.d/htpasswd
+
+- name: Copy whitelist
+  template:
+    src: templates/whitelist.j2
+    dest: /etc/nginx/custom.d/whitelist.conf
+
 - name: Check is SSL certificates exist
   stat:
     path: /etc/letsencrypt/live/{{ item }}.{{ domain }}
